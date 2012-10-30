@@ -26,11 +26,13 @@ overHeatingReactors = {
 }
 
 -- Set the output of a certain wire
-function setOutput(color, on)
-  redstone.setBundledOutput("back", 0)
-  
+function setOutput(color, on) 
   for i = 1, 16, 1 do
     if connections[i].color == color then
+      if connections[i].isOn == on then
+        return
+      end  
+      redstone.setBundledOutput("back", 0)
       connections[i].isOn = on
     end
   end
@@ -48,36 +50,31 @@ end
 --Reactor 1 Emergency Shutdown Controller
 --Checks to make sure that the reactor is staying within temperature
 function reactor1EmergencyShutdownController()
-  if (colors.test (redstone.getBundledInput("back"), colors.orange)) then
-    setOutput("white", true)
+	if (colors.test (redstone.getBundledInput("back"), colors.orange)) then
     overHeatingAlert(1, true)
-    if output == false then
+    if not(colors.test (redstone.getBundledOutput("back"), colors.white)) then
       print "Reactor #1 OverHeating Shutting it Down."
-      output = true
-    else
-      output = false
     end
-  else 
+    setOutput("white", true)
+	else
     overHeatingAlert(1, false)
-    setOutput("white", false)
-  end
+		setOutput("white", false)
+	end
 end
+
 --Reactor 2 Emergency Shutdown Controller
 --Checks to make sure that the reactor is staying within temperature
 function reactor2EmergencyShutdownController()
-  if (colors.test (redstone.getBundledInput("back"), colors.magenta)) then
-    setOutput("pink", true)
+	if (colors.test (redstone.getBundledInput("back"), colors.magenta)) then
     overHeatingAlert(2, true)
-    if output == false then
+    if not(colors.test (redstone.getBundledOutput("back"), colors.pink)) then
       print "Reactor #2 OverHeating Shutting it Down."
-      output = true
-    else
-      output = false
     end
-  else 
-    setOutput("pink", false)
+    setOutput("pink", true)
+	else 
+		setOutput("pink", false)
     overHeatingAlert(2, false)
-  end
+	end
 end
 
 -- Alert User Reactor Number and true if over heating
@@ -106,13 +103,61 @@ end
 -- setOutput("yellow", false) ice dispenser
   
 function reactor1FuelController()
-  if reactor1Status == 0 then
+  sensors.setActiveReading(controllerSide, reactor1Sensor, "ReactorContent")
+  contents = sensors.getReadingAsTable(controllerSide, reactor1Sensor)
+  
+  local emptyUranium = 0
+  local uranium = 0
+  local reactor1State = 0
+  local ice = 0;
+  
+  for i=1,#contents-1,2 do
+    if(string.find(contents[i+1],"1*UranEmpty") ~= nil) then
+      emptyUranium = emptyUranium + 1
+    end
+    if(string.find(contents[i+1],"1*Uran") ~= nil) then
+      uranium = uranium + 1
+    end
+    if(string.find(contents[i+1],"1*ice") ~= nil) then
+      ice = ice + 1
+    end
+  end
+  
+  uranium = uranium - emptyUranium
+  
+  print("Empty Uranium cells	 : "..emptyUranium)
+  print("Ice Blocks	 : "..ice)
+  if emptyUranium > 0 or uranium < 47 then
+    reactor1State = 1
+  else
+    reactor1State = 0
+  end
+  
+  -- Remove ice if there is more than 7 stacks in the reactor
+  if ice > 7 then
+    print "grey is false"
+    setOutput("grey", false)
+  else
+    setOutput("grey", true)
+  end
+  -- remove uranium if there is more than 47
+  if uranium > 47 then 
+    print "brown is false"
+    setOutput("brown", false)
+  else
+    setOutput("brown", true)
+  end
+    
+  -- reactor states
+  -- 0 is default state - cooling on
+  -- 1 is cooling of - depleated uranium extractor on. uranium injector on
+  if reactor1State == 0 then
     setOutput("cyan", true)
     setOutput("lime", true)
     setOutput("yellow", false)
   end
   
-  if reactor1Status == 1 then
+  if reactor1State == 1 then
     setOutput("cyan", false)
     setOutput("lime", false)
     setOutput("yellow", true)
@@ -130,13 +175,24 @@ function reactorEmergencyShutdownHandler()
   reactor2EmergencyShutdownController()
 end
 
+-- setup ccSensors and set reactors sensor
+function initializeSensors()
+  controllerSide = sensors.getController()
+  sensorDict = sensors.getSensors(controllerSide)
+  reactor1Sensor = sensorDict[1]
+end
+
 --main
+
+controllerSide = nil
+sensorsDict = nil
+
 print "Welcome to ReactorControl"
 print "Starting ReactorControl"
 
-local output = false
-reactor1Status = 0
 while true do
-  os.pullEvent() 
+  sleep(0.1)
+  initializeSensors()
   reactorEmergencyShutdownHandler()
+  reactorFuelHandler()
 end
