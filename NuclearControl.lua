@@ -125,8 +125,6 @@ function reactor1FuelController()
   
   uranium = uranium - emptyUranium
   
-  print("Empty Uranium cells	 : "..emptyUranium)
-  print("Ice Blocks	 : "..ice)
   if emptyUranium > 0 or uranium < 47 then
     reactor1State = 1
   else
