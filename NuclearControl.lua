@@ -50,31 +50,31 @@ end
 --Reactor 1 Emergency Shutdown Controller
 --Checks to make sure that the reactor is staying within temperature
 function reactor1EmergencyShutdownController()
-	if (colors.test (redstone.getBundledInput("back"), colors.orange)) then
+  if (colors.test (redstone.getBundledInput("back"), colors.orange)) then
     overHeatingAlert(1, true)
     if not(colors.test (redstone.getBundledOutput("back"), colors.white)) then
       print "Reactor #1 OverHeating Shutting it Down."
     end
     setOutput("white", true)
-	else
+  else
     overHeatingAlert(1, false)
-		setOutput("white", false)
-	end
+    setOutput("white", false)
+  end
 end
 
 --Reactor 2 Emergency Shutdown Controller
 --Checks to make sure that the reactor is staying within temperature
 function reactor2EmergencyShutdownController()
-	if (colors.test (redstone.getBundledInput("back"), colors.magenta)) then
+  if (colors.test (redstone.getBundledInput("back"), colors.magenta)) then
     overHeatingAlert(2, true)
     if not(colors.test (redstone.getBundledOutput("back"), colors.pink)) then
       print "Reactor #2 OverHeating Shutting it Down."
     end
     setOutput("pink", true)
-	else 
-		setOutput("pink", false)
+  else 
+    setOutput("pink", false)
     overHeatingAlert(2, false)
-	end
+  end
 end
 
 -- Alert User Reactor Number and true if over heating
