@@ -133,14 +133,12 @@ function reactor1FuelController()
   
   -- Remove ice if there is more than 7 stacks in the reactor
   if ice > 7 then
-    print "grey is false"
     setOutput("grey", false)
   else
     setOutput("grey", true)
   end
   -- remove uranium if there is more than 47
   if uranium > 47 then 
-    print "brown is false"
     setOutput("brown", false)
   else
     setOutput("brown", true)
