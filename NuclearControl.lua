@@ -54,7 +54,7 @@ function reactor1EmergencyShutdownController()
     if (colors.test (redstone.getBundledInput("back"), colors.orange)) then
       overHeatingAlert(1, true)
       if not(colors.test (redstone.getBundledOutput("back"), colors.white)) then
-        print "Reactor #1 OverHeating Shutting it Down."
+        pPrint(7, "Reactor #1 OverHeating Shutting it Down.")
       end
         setOutput("white", true)
     else
@@ -126,28 +126,30 @@ function reactor1FuelController()
   
   uranium = uranium - emptyUranium
   
-  print ("Uranium: " .. uranium)
-  print ("EmpyUranium: " .. emptyUranium)
-  print ("Ice: ".. ice)
+  pPrint(1, "Reactor #1")
+  pPrint(2, "----------------")
+  pPrint(4, ("Uranium: " .. uranium))
+  pPrint(5, ("EmptyUranium: " .. emptyUranium))
+  pPrint(6, ("Ice: ".. ice))
   
   if emptyUranium > 0 or uranium < 47 then
-    print "Reactor State: 1"
+    pPrint(3, "State: 1")
     reactor1State = 1
   else
-    print "Reactor State: 0"
+    pPrint(3, "State: 0")
     reactor1State = 0
   end
   
   -- Remove ice if there is more than 7 stacks in the reactor
   if ice > 7 then
     setOutput("grey", false)
-    print "To much ice. Removing it"
+    pPrint(7, "To much ice. Removing it")
   else
     setOutput("grey", true)
   end
   -- remove uranium if there is more than 47
   if uranium > 47 then 
-    print "To Much Uranium Removing it"
+    pPrint(7, "To Much Uranium Removing it")
     setOutput("brown", false)
   else
     setOutput("brown", true)
@@ -192,6 +194,12 @@ function initializeSensors()
   controllerSide = sensors.getController()
   sensorDict = sensors.getSensors(controllerSide)
   reactor1Sensor = sensorDict[1]
+end
+
+function pPrint(yPosition, message)
+  term.setCursorPos(1, yPosition)
+  term.clearLine()
+  print(message)
 end
 
 --main
