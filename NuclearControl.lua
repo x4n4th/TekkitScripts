@@ -55,7 +55,9 @@ function reactor1EmergencyShutdownController()
     if not(colors.test (redstone.getBundledOutput("back"), colors.white)) then
       print "Reactor #1 OverHeating Shutting it Down."
     end
-    setOutput("white", true)
+    if reactor1State == 0 then
+      setOutput("white", true)
+    end
   else
     overHeatingAlert(1, false)
     setOutput("white", false)
@@ -108,56 +110,70 @@ function reactor1FuelController()
   
   local emptyUranium = 0
   local uranium = 0
-  local reactor1State = 0
   local ice = 0;
   
-  for i=1,#contents-1,2 do
-    if(string.find(contents[i+1],"1*UranEmpty") ~= nil) then
+  for i = 1, #contents - 1, 2 do
+    if(string.find(contents[i+1], "1*UranEmpty") ~= nil) then
       emptyUranium = emptyUranium + 1
     end
-    if(string.find(contents[i+1],"1*Uran") ~= nil) then
+    if(string.find(contents[i+1], "1*Uran") ~= nil) then
       uranium = uranium + 1
     end
-    if(string.find(contents[i+1],"1*ice") ~= nil) then
+    if(string.find(contents[i+1], "1*ice") ~= nil) then
       ice = ice + 1
     end
   end
   
   uranium = uranium - emptyUranium
   
+  print ("Uranium: " .. uranium)
+  print ("EmpyUranium: " .. emptyUranium)
+  print ("Ice: ".. ice)
+  
   if emptyUranium > 0 or uranium < 47 then
+    print "Reactor State: 1"
     reactor1State = 1
   else
+    print "Reactor State: 0"
     reactor1State = 0
   end
   
   -- Remove ice if there is more than 7 stacks in the reactor
   if ice > 7 then
     setOutput("grey", false)
+    print "To much ice. Removing it"
   else
     setOutput("grey", true)
   end
   -- remove uranium if there is more than 47
   if uranium > 47 then 
+    print "To Much Uranium Removing it"
     setOutput("brown", false)
   else
     setOutput("brown", true)
   end
     
   -- reactor states
-  -- 0 is default state - cooling on
-  -- 1 is cooling of - depleated uranium extractor on. uranium injector on
+  -- 0 is default state - cooling on, reactor on
+  -- 1 is cooling off, reactor off - depleated uranium extractor on. uranium injector on
   if reactor1State == 0 then
     setOutput("cyan", true)
     setOutput("lime", true)
     setOutput("yellow", false)
+    setOutput("white", false)
   end
   
   if reactor1State == 1 then
     setOutput("cyan", false)
     setOutput("lime", false)
     setOutput("yellow", true)
+    setOutput("white", true)
   end
+  
+  uranium = 0
+  ice = 0
+  emptyUranium = 0
+  
 end
 
 -- Reactor Fuel Handler
@@ -182,13 +198,13 @@ end
 
 controllerSide = nil
 sensorsDict = nil
-
+reactor1State = 0
 print "Welcome to ReactorControl"
 print "Starting ReactorControl"
 
 while true do
-  sleep(0.1)
+  sleep(0.2)
   initializeSensors()
-  reactorEmergencyShutdownHandler()
   reactorFuelHandler()
+  reactorEmergencyShutdownHandler()
 end
