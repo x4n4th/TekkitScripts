@@ -105,9 +105,8 @@ end
 -- setOutput("yellow", false) ice dispenser
   
 function reactor1FuelController()
-  sensors.setActiveReading(controllerSide, reactor1Sensor, "ReactorContent")
   contents = sensors.getReadingAsTable(controllerSide, reactor1Sensor)
-  
+
   local emptyUranium = 0
   local uranium = 0
   local ice = 0;
@@ -194,6 +193,7 @@ function initializeSensors()
   controllerSide = sensors.getController()
   sensorDict = sensors.getSensors(controllerSide)
   reactor1Sensor = sensorDict[1]
+  sensors.setActiveReading(controllerSide, reactor1Sensor, "ReactorContent")
 end
 
 function pPrint(yPosition, message)
@@ -206,13 +206,15 @@ end
 
 controllerSide = nil
 sensorsDict = nil
+reactor1Sensor = nil
 reactor1State = 0
 print "Welcome to ReactorControl"
 print "Starting ReactorControl"
 
+initializeSensors()
+
 while true do
   sleep(0.2)
-  initializeSensors()
   reactorFuelHandler()
   reactorEmergencyShutdownHandler()
 end
