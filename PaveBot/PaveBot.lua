@@ -100,6 +100,16 @@ intersection = {
   {x = 15, z = 15, blockType = "dirt"},
 }
 
+function getBlockTypeFromDeltas(x, y)
+  for i = 1, i <= intersection.getn(), 1 do
+  
+    if intersection.x == x and intersection.y == y then
+      return intersection.blockType
+    end
+  end
+  return nil
+end
+
 --[[Wrapper Function for GPS API to get GPS location
   @return x, y, z 
   ]]
@@ -148,10 +158,16 @@ function changeDirection(disiredDirection)
   end
 end
 
---TODO Finish this function
+--[[ Slot locations for each block
+  @itemName : String - name of block
+  @return : Slot number containing itemName]]
 function getItemSlot(itemName)
-  if itemName == "dirt" then
+  if itemName == "dirt" or itemName == "grass" then
     return 0
+  else if itemName = "basalt" then
+    return 1
+  else if itemName = "log" then 
+    return 2
   end
 end
 
@@ -165,20 +181,34 @@ function pave(paveType, orientation)
   -- At this point robot will assume that it is at the correct location at the north west corner of the chunk
   -- We will start directly east and work south
   changeDirection(1) -- point east
-  for i = 0, 15, 1 do
-    for r = 0, 15, 1 do
-      if turtle.detectDown() then
+  
+  --Chunk Bounds
+  x = 0
+  
+  while x <= 15 do
+    for y = 0, 15, 1 do
+     if turtle.detectDown() then
         if paveType = "intersection" then
-          
+          turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
         else if paveType = "road" then
-        
+          turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)
         end
         
-        turtle.compareDown()
+        if turtle.compareDown() then
+          -- Do nothing block already there
+        else
+          turtle.digDown()
+          turtle.place()
+        end
       end
+      turtle.forward()
     end
+    
+    x = x + 1
+    changeDirection(2)
+    turtle.forward()
+    changeDirection(1)
   end
-  
 end
 --[[******************************************************************
     END State tasks
