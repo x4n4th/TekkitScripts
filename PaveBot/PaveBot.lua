@@ -61,6 +61,13 @@ intersection = {
   {x = 8, y = 14, blockType = "log"},
   {x = 8, y = 15, blockType = "log"},
   
+  {x = 9, y = 0, blockType = "dirt"},
+  {x = 9, y = 1, blockType = "dirt"},
+  {x = 9, y = 2, blockType = "dirt"},
+  {x = 9, y = 13, blockType = "dirt"},
+  {x = 9, y = 14, blockType = "dirt"},
+  {x = 9, y = 15, blockType = "dirt"},
+  
   {x = 13, y = 0, blockType = "dirt"},
   {x = 13, y = 1, blockType = "dirt"},
   {x = 13, y = 2, blockType = "dirt"}, 
