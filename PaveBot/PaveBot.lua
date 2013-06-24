@@ -1,6 +1,4 @@
--- Lua Script to control tekkit nuclear reactors
-
--- Make redstone connections toggleable
+-- Lua Script to control PaveBot
 
 -- Library of delta's for paved intersection
 -- 0,0 is the north west corner of a chunk
@@ -101,6 +99,13 @@ intersection = {
   {x = 15, z = 14, blockType = "dirt"},
   {x = 15, z = 15, blockType = "dirt"},
 }
+
+--[[Wrapper Function for GPS API to get GPS location
+	@return x, y, z 
+	]]
+function getExactLocation()
+	return gps.location(5)
+end
 
 --[[Return Block type based on how many block away from the
   north west corner of the chunk
