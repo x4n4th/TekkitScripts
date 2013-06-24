@@ -126,3 +126,67 @@ function getPaveBlockFromDelta(x, z, orientation)
 		return "dirt"
 	end
 end
+
+--[[Changes direction of bot to desired direction
+ @desiredDirection : Integer Based yaw of robot. Clockwise north to west
+	0 to 3 Respectively
+		   N
+		*  0  *
+	 W	3  *  1  E
+		*  2  *
+		   S
+ ]]
+function changeDirection(disiredDirection)
+	while yaw ~= desiredDiection do 
+		if yaw < desiredDirection then
+			turtle.turnLeft()
+			yaw = yaw - 1
+		else
+			turtle.turnRight()
+			yaw = yaw + 1
+		end
+	end
+end
+
+--TODO Finish this function
+function getItemSlot(itemName)
+  if itemName == "dirt" then
+    return 0
+  end
+end
+
+--[[******************************************************************
+	State Tasks - Functions dependant on State of robot
+	******************************************************************]]
+--[[ paving state function
+	@paveType : "intersection" or "road"
+	@orientation : 0 or 1 - North or south]]
+function pave(paveType, orientation)
+	-- At this point robot will assume that it is at the correct location at the north west corner of the chunk
+	-- We will start directly east and work south
+	changeDirection(1) -- point east
+	for i = 0, 15, 1 do
+		for r = 0, 15, 1 do
+			if turtle.detectDown() then
+				if paveType = "intersection" then
+          
+				else if paveType = "road" then
+        
+				end
+        
+        turtle.compareDown()
+			end
+		end
+	end
+	
+end
+--[[******************************************************************
+    END State tasks
+	******************************************************************]]
+--[[Main]]
+yaw = nil -- 0 to 3 North to West respectively clockwise
+
+while true do
+
+  sleep(0.2)
+end
