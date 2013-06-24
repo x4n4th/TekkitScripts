@@ -113,9 +113,9 @@ function getPaveBlockFromDelta(x, z, orientation)
 		z = x
 	end
 	
-	if (z > 2 && z < 5) || (z > 9 && z < 13) then
+	if (z > 2 and z < 5) or (z > 9 and z < 13) then
 		return "basalt"
-	else if z > 6 && z < 9 then
+	else if z > 6 and z < 9 then
 		return "log"
 	else 
 		return "dirt"
