@@ -100,9 +100,13 @@ intersection = {
   {x = 15, z = 15, blockType = "dirt"},
 }
 
+--[[Return Block type based on location for intersection
+ @x : Integer Based on delta of x blocks
+ @z : Integer Based on delta of z block
+ @return : return block type at x, y location
+ ]]
 function getBlockTypeFromDeltas(x, y)
   for i = 1, i <= intersection.getn(), 1 do
-  
     if intersection.x == x and intersection.y == y then
       return intersection.blockType
     end
@@ -118,7 +122,7 @@ function getExactLocation()
 end
 
 --[[Return Block type based on how many block away from the
-  north west corner of the chunk
+  north west corner of the chunk for the road
  @x : Integer Based on delta of x blocks
  @z : Integer Based on delta of z block
  @orientation: Pointing direction, "north" or "west"
