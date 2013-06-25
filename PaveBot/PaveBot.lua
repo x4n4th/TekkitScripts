@@ -134,7 +134,7 @@ function getPaveBlockFromDelta(x, z, orientation)
   
   if (z > 2 and z < 5) or (z > 9 and z < 13) then
     return "basalt"
-  else if z > 6 and z < 9 then
+  elseif z > 6 and z < 9 then
     return "log"
   else 
     return "dirt"
@@ -168,9 +168,9 @@ end
 function getItemSlot(itemName)
   if itemName == "dirt" or itemName == "grass" then
     return 0
-  else if itemName = "basalt" then
+  elseif itemName == "basalt" then
     return 1
-  else if itemName = "log" then 
+  elseif itemName == "log" then 
     return 2
   end
 end
@@ -191,11 +191,11 @@ function pave(paveType, orientation)
   
   while x <= 15 do
     for y = 0, 15, 1 do
-     if turtle.detectDown() then
-        if paveType = "intersection" then
+      if turtle.detectDown() then
+        if paveType == "intersection" then
           turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
-        else if paveType = "road" then
-          turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)
+        elseif paveType == "road" then
+          turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)))
         end
         
         if turtle.compareDown() then
@@ -221,6 +221,5 @@ end
 yaw = nil -- 0 to 3 North to West respectively clockwise
 
 while true do
-
-  sleep(0.2)
+  break
 end
