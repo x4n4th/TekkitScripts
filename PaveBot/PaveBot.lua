@@ -107,7 +107,7 @@ intersection = {
  ]]
 function getBlockTypeFromDeltas(x, y)
   for i = 1, i <= intersection.getn(), 1 do
-    if intersection.x == x and intersection.y == y then
+    if intersection[i].x == x and intersection[i].y == y then
       return intersection.blockType
     end
   end
@@ -217,8 +217,31 @@ end
 --[[******************************************************************
     END State tasks
   ******************************************************************]]
+  
+--[[******************************************************************
+    Path finding Implementation
+    Turtle Will favor going in the direction of the target. But it will never track back 
+    This implementation will try to avoid obstacles by flying directly up and moving towards the target
+  ******************************************************************]]
+function getBestMove(x, y)
+  setCurrentLocation(x,y)
+  
+end
+
+function setCurrentLocation(x,y)
+  previousLocation[1].x = x
+  previousLocation[1].y = y
+end
+
+--[[******************************************************************
+  END path finding Implementation
+    ******************************************************************]]
+  
 --[[Main]]
 yaw = nil -- 0 to 3 North to West respectively clockwise
+previousLocation = {
+  {x = 0, y = 0}
+}
 
 while true do
   break
