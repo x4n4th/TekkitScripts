@@ -144,11 +144,13 @@ end
 --[[Changes direction of bot to desired direction
  @desiredDirection : Integer Based yaw of robot. Clockwise north to west
   0 to 3 Respectively
-       N
-    *  0  *
- W  3  *  1  E
-    *  2  *
-       S
+         -z
+          N
+       *  0  *
+-x  W  3  *  1  E +x
+       *  2  *
+          S
+         +z
  ]]
 function changeDirection(disiredDirection)
   while yaw ~= desiredDiection do 
@@ -220,27 +222,56 @@ end
   
 --[[******************************************************************
     Path finding Implementation
-    Turtle Will favor going in the direction of the target. But it will never track back 
+    Turtle Will favour going in the direction of the target. But it will never track back 
     This implementation will try to avoid obstacles by flying directly up and moving towards the target
+    @x intended target x
+    @z intended target z
+    @y intended target y
+    @return returns yaw direction the turtle should move
   ******************************************************************]]
-function getBestMove(x, y)
-  setCurrentLocation(x,y)
+function getBestMove(x, z, y)
+  --Get previous location so we do not go back.
+  local prevX = previousLocation[1].x
+  local prevZ = previousLocation[1].z
   
+  -- Get Current Location
+  currentX, currentZ = getExactLocation()
+  --Set new previous location because we will be moving
+  setCurrentLocation(currentX, currentZ)
+  
+  local facedDirection = yaw
+  
+  local diffX = currentX - x
+  local diffZ = currentZ - z
+  
+  if diffX < 0 then
+    return 1
+  elseif diffX > 0 then 
+    return 3
+  end
+  
+  if diffZ < 0 then
+    return 2
+  elseif diffZ > 0 then 
+    return 0
+  end
+    
+  return -1
 end
 
-function setCurrentLocation(x,y)
+function setCurrentLocation(x,z)
   previousLocation[1].x = x
-  previousLocation[1].y = y
+  previousLocation[1].z = z
 end
 
 --[[******************************************************************
   END path finding Implementation
-    ******************************************************************]]
+  ******************************************************************]]
   
 --[[Main]]
 yaw = nil -- 0 to 3 North to West respectively clockwise
 previousLocation = {
-  {x = 0, y = 0}
+  {x = 0, z = 0}
 }
 
 while true do
