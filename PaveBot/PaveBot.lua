@@ -196,14 +196,35 @@ function pave(paveType, orientation)
     for y = 0, 15, 1 do
       if turtle.detectDown() then
         if paveType == "intersection" then
-          turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
+          local block = getBlockTypeFromDeltas(x,y)
+          local slot = getItemSlot(block)
+          if verbose then
+            print("For Intersection")
+            print("Getting Block Type: " .. block)
+            print("Getting Slot for item " .. slot)
+          end
+          turtle.select(slot)
+          --turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
         elseif paveType == "road" then
-          turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)))
+          block = getPaveBlockFromDelta(x, y, orientation)
+          slot = getItemSlot(block)
+          if verbose then
+            print("For Road")
+            print("Getting Block Type: " .. block)
+            print("Getting Slot for item " .. slot)
+          end
+          turtle.select(slot)
+          -- turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)))
         end
         
         if turtle.compareDown() then
-          -- Do nothing block already there
+          if verbose then
+            print("Block is already there")
+          end
         else
+          if verbose then
+            print("Replacing Block")
+          end
           turtle.digDown()
           turtle.place()
         end
@@ -289,6 +310,7 @@ end
   
 --[[Main]]
 yaw = nil -- 0 to 3 North to West respectively clockwise
+verbose = true -- causes robot to print out everything it is doing
 previousLocation = {
   {x = 0, z = 0}
 }
