@@ -106,8 +106,8 @@ intersection = {
  @return : return block type at x, y location
  ]]
 function getBlockTypeFromDeltas(x, y)
-  for i = 1, i <= intersection.getn(), 1 do
-    if intersection[i].x == x and intersection[i].y == y then
+  for i, intersection in ipairs(intersection) do
+    if intersection.x == x and intersection.y == y then
       return intersection.blockType
     end
   end
@@ -175,6 +175,7 @@ function getItemSlot(itemName)
   elseif itemName == "log" then 
     return 2
   end
+  return 3
 end
 
 --[[******************************************************************
@@ -229,6 +230,9 @@ end
     @y intended target y
     @return returns yaw direction the turtle should move
   ******************************************************************]]
+  
+--[[ Will get the best move given a target location
+  @x, y, z Targeted location]]
 function getBestMove(x, z, y)
   --Get previous location so we do not go back.
   local prevX = previousLocation[1].x
@@ -264,6 +268,21 @@ function setCurrentLocation(x,z)
   previousLocation[1].z = z
 end
 
+--[[ Moves turtle in direction given
+  @yaw : direction the turtle will move in]]
+function moveInDirection(yaw)
+  if yaw == 4 then
+    turtle.movedown()
+    return
+  elseif yaw == 5 then
+    turtle.moveUp()
+    return
+  end
+  
+  changeDirection(yaw)
+  turtle.forward() 
+end
+
 --[[******************************************************************
   END path finding Implementation
   ******************************************************************]]
@@ -275,5 +294,5 @@ previousLocation = {
 }
 
 while true do
-  break
+  pave("intersection", 0)
 end
