@@ -170,7 +170,7 @@ end
 function getItemSlot(itemName)
   if itemName == "dirt" or itemName == "grass" then
     return 0
-  elseif itemName == "basalt" then
+  elseif itemName == "basalt" or itemName == nil then
     return 1
   elseif itemName == "log" then 
     return 2
