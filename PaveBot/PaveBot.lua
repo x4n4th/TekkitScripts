@@ -209,49 +209,47 @@ function pave(paveType, orientation)
   
   while x <= 15 do
     for y = 0, 15, 1 do
-      if turtle.detectDown() then
-        if paveType == "intersection" then
-          local block = getBlockTypeFromDeltas(x,y)
-          local slot = getItemSlot(block)
-          if verbose then
-            print("For Intersection")
-            if block == nil then
-              print("Getting Block Type: Basalt")
-            else
-              print("Getting Block Type: " .. block)
-            end
-            print("Getting Slot for item " .. slot)
+      if paveType == "intersection" then
+        local block = getBlockTypeFromDeltas(x,y)
+        local slot = getItemSlot(block)
+        if verbose then
+          print("For Intersection")
+          if block == nil then
+            print("Getting Block Type: Basalt")
+          else
+            print("Getting Block Type: " .. block)
           end
-          turtle.select(slot)
-          --turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
-        elseif paveType == "road" then
-          block = getPaveBlockFromDelta(x, y, orientation)
-          slot = getItemSlot(block)
-          if verbose then
-            print("For Road")
-            if block == nil then
-              print("Getting Block Type: Basalt")
-            else
-              print("Getting Block Type: " .. block)
-            end
-            print("Getting Slot for item " .. slot)
-          end
-          turtle.select(slot)
-          -- turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)))
+          print("Getting Slot for item " .. slot)
         end
-        
-        if turtle.compareDown() then
-          if verbose then
-            print("Block is already there")
+        turtle.select(slot)
+        --turtle.select(getItemSlot(getBlockTypeFromDeltas(x,y)))
+      elseif paveType == "road" then
+        block = getPaveBlockFromDelta(x, y, orientation)
+        slot = getItemSlot(block)
+        if verbose then
+          print("For Road")
+          if block == nil then
+            print("Getting Block Type: Basalt")
+          else
+            print("Getting Block Type: " .. block)
           end
-        else
-          if verbose then
-            print("Replacing Block")
-          end
-          turtle.digDown()
-          turtle.placeDown()
+          print("Getting Slot for item " .. slot)
         end
+        turtle.select(slot)
+        -- turtle.select(getItemSlot(getPaveBlockFromDelta(x, y, orientation)))
       end
+      
+      if turtle.compareDown() then
+        if verbose then
+          print("Block is already there")
+        end
+      else
+        if verbose then
+          print("Replacing Block")
+        end
+        turtle.digDown()
+      end
+      turtle.placeDown()
       turtle.forward()
     end
     
