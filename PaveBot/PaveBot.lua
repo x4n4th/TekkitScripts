@@ -105,10 +105,11 @@ intersection = {
  @z : Integer Based on delta of z block
  @return : return block type at x, y location
  ]]
-function getBlockTypeFromDeltas(x, y)
-  for i, intersection in ipairs(intersection) do
-    if intersection.x == x and intersection.y == y then
-      return intersection.blockType
+function getBlockTypeFromDeltas(x, z)
+  for i = 1, 84, 1 do
+    if intersection[i].x == x and intersection[i].z == z then
+      print("X: " .. x .. " Z: " .. z)
+      return intersection[i].blockType
     end
   end
   return nil
@@ -132,7 +133,7 @@ function getPaveBlockFromDelta(x, z, orientation)
     z = x
   end
   
-  if (z > 2 and z < 5) or (z > 9 and z < 13) then
+  if (z > 2 and z < 6) or (z > 9 and z < 13) then
     return "basalt"
   elseif z > 6 and z < 9 then
     return "log"
@@ -152,15 +153,23 @@ end
           S
          +z
  ]]
-function changeDirection(disiredDirection)
+function changeDirection(desiredDirection)
+  if verbose then
+    print ("Changing Direction: " .. desiredDirection)
+    print ("Current Yaw: " .. yaw)
+  end
   while yaw ~= desiredDiection do 
-    if yaw < desiredDirection then
+    if yaw > desiredDirection then
       turtle.turnLeft()
       yaw = yaw - 1
     else
       turtle.turnRight()
       yaw = yaw + 1
     end
+    if yaw == desiredDirection then
+      break
+    end
+    print ("Success Yaw: " .. yaw)
   end
 end
 
@@ -169,13 +178,19 @@ end
   @return : Slot number containing itemName]]
 function getItemSlot(itemName)
   if itemName == "dirt" or itemName == "grass" then
-    return 0
-  elseif itemName == "basalt" or itemName == nil then
     return 1
-  elseif itemName == "log" then 
+  elseif itemName == "basalt" or itemName == nil then
     return 2
+  elseif itemName == "log" then 
+    return 3
   end
-  return 3
+  return 4
+end
+
+-- temp fuel function
+function fuel()
+  turtle.select(4)
+  turtle.refuel(4)
 end
 
 --[[******************************************************************
@@ -200,7 +215,11 @@ function pave(paveType, orientation)
           local slot = getItemSlot(block)
           if verbose then
             print("For Intersection")
-            print("Getting Block Type: " .. block)
+            if block == nil then
+              print("Getting Block Type: Basalt")
+            else
+              print("Getting Block Type: " .. block)
+            end
             print("Getting Slot for item " .. slot)
           end
           turtle.select(slot)
@@ -210,7 +229,11 @@ function pave(paveType, orientation)
           slot = getItemSlot(block)
           if verbose then
             print("For Road")
-            print("Getting Block Type: " .. block)
+            if block == nil then
+              print("Getting Block Type: Basalt")
+            else
+              print("Getting Block Type: " .. block)
+            end
             print("Getting Slot for item " .. slot)
           end
           turtle.select(slot)
@@ -226,16 +249,29 @@ function pave(paveType, orientation)
             print("Replacing Block")
           end
           turtle.digDown()
-          turtle.place()
+          turtle.placeDown()
         end
       end
       turtle.forward()
     end
     
     x = x + 1
-    changeDirection(2)
-    turtle.forward()
-    changeDirection(1)
+    
+    if x > 15 then 
+      break
+    end
+    
+    if yaw == 1 then
+      changeDirection(2)
+      turtle.forward()
+      changeDirection(3)
+      turtle.forward()
+    elseif yaw == 3 then 
+      changeDirection(2)
+      turtle.forward()
+      changeDirection(1)
+      turtle.forward()
+    end
   end
 end
 --[[******************************************************************
@@ -309,12 +345,13 @@ end
   ******************************************************************]]
   
 --[[Main]]
-yaw = nil -- 0 to 3 North to West respectively clockwise
+yaw = 0 -- 0 to 3 North to West respectively clockwise
 verbose = true -- causes robot to print out everything it is doing
 previousLocation = {
   {x = 0, z = 0}
 }
 
 while true do
+  fuel()
   pave("intersection", 0)
 end
