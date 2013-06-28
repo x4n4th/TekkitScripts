@@ -272,6 +272,24 @@ function pave(paveType, orientation)
     end
   end
 end
+
+--[[Path finding state function
+    This function is spawn when the bot needs to move from one location the current location
+    to an end location
+    @x intended target x
+    @z intended target z
+    @y intended target y]]
+function pathFinding(x, y ,z)
+  -- main while loops for bot to go to location
+  while true do
+    moveInDirection(getBestMove(x, y, z))
+    eX, eY, eZ = getExactLocation()
+    if x == eX and y == eY and z == eZ then
+      print("We have arrived")
+      break
+    end
+  end
+end
 --[[******************************************************************
     END State tasks
   ******************************************************************]]
@@ -288,7 +306,7 @@ end
   
 --[[ Will get the best move given a target location
   @x, y, z Targeted location]]
-function getBestMove(x, z, y)
+function getBestMove(x, y, z)
   --Get previous location so we do not go back.
   local prevX = previousLocation[1].x
   local prevZ = previousLocation[1].z
