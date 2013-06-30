@@ -285,7 +285,6 @@ function pathFinding(x, y ,z)
     moveInDirection(getBestMove(x, y, z))
     eX, eY, eZ = getExactLocation()
     if x == eX and y == eY and z == eZ then
-      print("We have arrived")
       break
     end
   end
