@@ -129,7 +129,7 @@ end
  @orientation: Pointing direction, "north" or "west"
  ]]
 function getPaveBlockFromDelta(x, z, orientation)
-  if orientation == "north" then
+  if orientation == "east" then
     z = x
   end
   
@@ -250,7 +250,9 @@ function pave(paveType, orientation)
         turtle.digDown()
       end
       turtle.placeDown()
-      turtle.forward()
+      if y < 15 then
+        turtle.forward()
+      end
     end
     
     x = x + 1
@@ -263,12 +265,10 @@ function pave(paveType, orientation)
       changeDirection(2)
       turtle.forward()
       changeDirection(3)
-      turtle.forward()
     elseif yaw == 3 then 
       changeDirection(2)
       turtle.forward()
       changeDirection(1)
-      turtle.forward()
     end
   end
 end
@@ -302,6 +302,26 @@ end
     @y intended target y
     @return returns yaw direction the turtle should move
   ******************************************************************]]
+
+--[[ return the pave type given the chunk location
+    @v vector chunk location]]
+function getChunkType(v)
+  x = v.x
+  z = v.y
+  
+  xO = (x / 16 ) % 4
+  zO = (z / 16 ) % 4
+  
+  if zO == 0 and xO == 0 then
+    return "intersection"
+  elseif zO == 0 then
+    return "east"
+  elseif xO == 0 then
+    return "north"
+  else
+    return nil
+  end
+end
   
 --[[ Will get the best move given a target location
   @x, y, z Targeted location]]
@@ -368,5 +388,5 @@ previousLocation = {
 
 while true do
   fuel()
-  pave("intersection", 0)
+  pave("road", "north")
 end
