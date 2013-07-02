@@ -108,7 +108,6 @@ intersection = {
 function getBlockTypeFromDeltas(x, z)
   for i = 1, 84, 1 do
     if intersection[i].x == x and intersection[i].z == z then
-      print("X: " .. x .. " Z: " .. z)
       return intersection[i].blockType
     end
   end
@@ -305,10 +304,7 @@ end
 
 --[[ return the pave type given the chunk location
     @v vector chunk location]]
-function getChunkType(v)
-  x = v.x
-  z = v.y
-  
+function getChunkType(x, z)
   xO = (x / 16 ) % 4
   zO = (z / 16 ) % 4
   
@@ -388,5 +384,29 @@ previousLocation = {
 
 while true do
   fuel()
+  x, y, z = getExactLocation()
+  local temp = http.post(x .. "," .. y .. "," .. z)
+  targTable = mysplit(temp, ",")
+  targId = targTable[1]
+  targX = targTable[2]
+  targY = targTable[3]
+  targZ = targTable[4]
+  
+  pathFinding(targX, targY, targZ)
+  
   pave("road", "north")
+end
+
+-- General Utility Functions
+
+function mysplit(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  t={} ; i=1
+  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    t[i] = str
+    i = i + 1
+  end
+  return t
 end

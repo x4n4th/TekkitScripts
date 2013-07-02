@@ -11,7 +11,7 @@ if(!$con){
 if( isset($_POST['whatnext'])){
   $currentLocation = $_POST['whatnext'];
   
-  //Attempt to calculate next best location based on current location
+  //TODO Attempt to calculate next best location based on current location
   
   $locations = explode(",", $currentLocation, 3);
   
@@ -26,7 +26,7 @@ if( isset($_POST['whatnext'])){
   if (!$result) {
     die('Invalid query: ' . mysql_error());
   }
-  $id = null
+  $id = null;
   while($row = mysqli_fetch_array($result))
   {
     $id = $row['Id'];
@@ -36,10 +36,10 @@ if( isset($_POST['whatnext'])){
     echo $row['z'];
   }
   
-  mysqli_query($con,"UPDATE chunks SET inProgress = 1 WHERE Id = " . $id);
+  mysqli_query($con,"UPDATE chunks SET inProgress = 0 WHERE Id = " . $id);
   mysqli_close($con);
 } elseif ( isset($_POST['finished'])){ //Given a chunk set finished
-  $id = $_POST['finished'];
+  $id = mysql_real_escape_string($_POST['finished']);
   mysqli_query($con,"UPDATE chunks SET inProgress = 0 WHERE Id = " . $id);
   mysqli_query($con,"UPDATE chunks SET finished = 1 WHERE Id = " . $id);
 }
