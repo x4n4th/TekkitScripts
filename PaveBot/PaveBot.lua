@@ -412,11 +412,11 @@ while true do
   local response = http.get("http://dev.1337clan.com/botController.php?loc=" .. loc)
   
   if response then
-		print( "Success." )
-		
-		local temp = response.readAll()
+    print( "Success." )
+    
+    local temp = response.readAll()
      print(temp)
-		response.close()
+    response.close()
      
     print(response.getResponseCode())
     targTable = mysplit(temp, ",")
@@ -436,10 +436,10 @@ while true do
     else
       print("Invalid Location")
     end
-		
-	else
-		print( "Failed." )
-	end	
+    
+  else
+    print( "Failed." )
+  end 
 
 
 end
