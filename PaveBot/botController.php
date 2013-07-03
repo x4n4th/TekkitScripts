@@ -8,8 +8,8 @@ if(!$con){
   attention. Pattern is ChunkID, X, Y, Z in [1,12,34,56]
 */
 
-if( isset($_POST['whatnext'])){
-  $currentLocation = $_POST['whatnext'];
+if( isset($_GET['loc'])){
+  $currentLocation = $_GET['loc'];
   
   //TODO Attempt to calculate next best location based on current location
   

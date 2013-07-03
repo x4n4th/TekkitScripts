@@ -118,7 +118,7 @@ end
   @return x, y, z 
   ]]
 function getExactLocation()
-  return gps.location(5)
+  return gps.locate(5)
 end
 
 --[[Return Block type based on how many block away from the
@@ -156,6 +156,9 @@ function changeDirection(desiredDirection)
   if verbose then
     print ("Changing Direction: " .. desiredDirection)
     print ("Current Yaw: " .. yaw)
+  end
+  if(yaw == desiredDirection) then
+    return
   end
   while yaw ~= desiredDiection do 
     if yaw > desiredDirection then
@@ -272,7 +275,7 @@ function pave(paveType, orientation)
   end
 end
 
---[[Path finding state function
+--[[Path finding state functionp
     This function is spawn when the bot needs to move from one location the current location
     to an end location
     @x intended target x
@@ -281,9 +284,7 @@ end
 function pathFinding(x, y ,z)
   -- main while loops for bot to go to location
   while true do
-    moveInDirection(getBestMove(x, y, z))
-    eX, eY, eZ = getExactLocation()
-    if x == eX and y == eY and z == eZ then
+    if moveInDirection(getBestMove(x, y, z)) == -1 then
       break
     end
   end
@@ -327,7 +328,11 @@ function getBestMove(x, y, z)
   local prevZ = previousLocation[1].z
   
   -- Get Current Location
-  currentX, currentZ = getExactLocation()
+  currentX, currentY, currentZ = getExactLocation()
+  
+  if currentX == x and currentY == y and currentZ == z then
+    return -1
+  end  
   --Set new previous location because we will be moving
   setCurrentLocation(currentX, currentZ)
   
@@ -359,6 +364,10 @@ end
 --[[ Moves turtle in direction given
   @yaw : direction the turtle will move in]]
 function moveInDirection(yaw)
+
+  if yaw == -1 then 
+    return -1
+  end
   if yaw == 4 then
     turtle.movedown()
     return
@@ -374,38 +383,6 @@ end
 --[[******************************************************************
   END path finding Implementation
   ******************************************************************]]
-  
---[[Main]]
-yaw = 0 -- 0 to 3 North to West respectively clockwise
-verbose = true -- causes robot to print out everything it is doing
-previousLocation = {
-  {x = 0, z = 0}
-}
-
-while true do
-  fuel()
-  x, y, z = getExactLocation()
-  local temp = http.post("http://dev.1337clan.com/botController.php", "whatnext")
-  print(temp)
-  targTable = mysplit(temp, ",")
-  targId = targTable[1]
-  targX = targTable[2]
-  targY = targTable[3]
-  targZ = targTable[4]
-  
-  pathFinding(targX, targY, targZ)
-  x, y, z = getExactLocation()
-  if getChunkType(x, z) == "intersection" then
-    pave("intersection", "north")
-  elseif getChunkType(x, z) == "north" then
-    pave("road", "north")
-  elseif getChunkType(x, z) == "east" then
-    pave("road", "east")
-  else
-    print("Invalid Location")
-  end
-
-end
 
 -- General Utility Functions
 
@@ -419,4 +396,50 @@ function mysplit(inputstr, sep)
     i = i + 1
   end
   return t
+end
+
+--[[Main]]
+yaw = 0 -- 0 to 3 North to West respectively clockwise
+verbose = true -- causes robot to print out everything it is doing
+previousLocation = {
+  {x = 0, z = 0}
+}
+
+while true do
+  fuel()
+  x, y, z = getExactLocation()
+  loc = "temp"
+  local response = http.get("http://dev.1337clan.com/botController.php?loc=" .. loc)
+  
+  if response then
+		print( "Success." )
+		
+		local temp = response.readAll()
+     print(temp)
+		response.close()
+     
+    print(response.getResponseCode())
+    targTable = mysplit(temp, ",")
+    targId = targTable[1]
+    targX = targTable[2]
+    targY = targTable[3]
+    targZ = targTable[4]
+    
+    pathFinding(targX, targY, targZ)
+    x, y, z = getExactLocation()
+    if getChunkType(x, z) == "intersection" then
+      pave("intersection", "north")
+    elseif getChunkType(x, z) == "north" then
+      pave("road", "north")
+    elseif getChunkType(x, z) == "east" then
+      pave("road", "east")
+    else
+      print("Invalid Location")
+    end
+		
+	else
+		print( "Failed." )
+	end	
+
+
 end
