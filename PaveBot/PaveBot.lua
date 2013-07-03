@@ -385,7 +385,8 @@ previousLocation = {
 while true do
   fuel()
   x, y, z = getExactLocation()
-  local temp = http.post(x .. "," .. y .. "," .. z)
+  local temp = http.post("http://dev.1337clan.com/botController.php", "whatnext")
+  print(temp)
   targTable = mysplit(temp, ",")
   targId = targTable[1]
   targX = targTable[2]
@@ -393,8 +394,17 @@ while true do
   targZ = targTable[4]
   
   pathFinding(targX, targY, targZ)
-  
-  pave("road", "north")
+  x, y, z = getExactLocation()
+  if getChunkType(x, z) == "intersection" then
+    pave("intersection", "north")
+  elseif getChunkType(x, z) == "north" then
+    pave("road", "north")
+  elseif getChunkType(x, z) == "east" then
+    pave("road", "east")
+  else
+    print("Invalid Location")
+  end
+
 end
 
 -- General Utility Functions
