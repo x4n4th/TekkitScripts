@@ -412,13 +412,10 @@ while true do
   local response = http.get("http://dev.1337clan.com/botController.php?loc=" .. loc)
   
   if response then
-    print( "Success." )
-    
     local temp = response.readAll()
-    print(temp)
+    print("Location: [" .. temp .. "]")
     response.close()
      
-    print(response.getResponseCode())
     targTable = mysplit(temp, ",")
     targId = targTable[1]
     targX = targTable[2]
@@ -438,7 +435,8 @@ while true do
     end
     
   else
-    print( "Failed." )
+    print( "No Chunks to pave. Waiting ...")
+    os.sleep(5)
   end 
 
 
