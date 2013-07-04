@@ -162,10 +162,10 @@ function changeDirection(desiredDirection)
   end
   while yaw ~= desiredDiection do 
     if yaw > desiredDirection then
-      turtle.turnLeft()
+      turtle.turnRight()
       yaw = yaw - 1
     else
-      turtle.turnRight()
+      turtle.turnLeft()
       yaw = yaw + 1
     end
     if yaw == desiredDirection then
