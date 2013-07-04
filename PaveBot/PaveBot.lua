@@ -275,7 +275,7 @@ function pave(paveType, orientation)
   end
 end
 
---[[Path finding state functionp
+--[[Path finding state function
     This function is spawn when the bot needs to move from one location the current location
     to an end location
     @x intended target x
@@ -415,7 +415,7 @@ while true do
     print( "Success." )
     
     local temp = response.readAll()
-     print(temp)
+    print(temp)
     response.close()
      
     print(response.getResponseCode())
