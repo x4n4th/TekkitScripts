@@ -153,21 +153,22 @@ end
          +z
  ]]
 function changeDirection(desiredDirection)
+  if(yaw == desiredDirection) then
+    return
+  end
   if verbose then
     print ("Changing Direction: " .. desiredDirection)
     print ("Current Yaw: " .. yaw)
   end
-  if(yaw == desiredDirection) then
-    return
-  end
   while yaw ~= desiredDiection do 
-    if yaw > desiredDirection then
-      turtle.turnRight()
-      yaw = yaw - 1
-    else
-      turtle.turnLeft()
-      yaw = yaw + 1
+  
+    turtle.turnRight()
+    yaw = yaw + 1
+    
+    if yaw == 4 then
+      yaw = 0
     end
+    
     if yaw == desiredDirection then
       break
     end
@@ -377,7 +378,11 @@ function moveInDirection(yaw)
   end
   
   changeDirection(yaw)
-  turtle.forward() 
+  if turtle.forward() then
+    -- Success Moved Forward
+  else
+    -- os.sleep(1)
+  end
 end
 
 --[[******************************************************************
